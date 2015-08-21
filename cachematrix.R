@@ -1,37 +1,53 @@
-## Put comments here that give an overall description of what your
-## functions do
 
-## Write a short comment describing this function
-
+# function creates a special "matrix" object that can cache its inverse
 makeCacheMatrix <- function(x = matrix()) {
-  f <- NULL
+  
+  matrixinverse <- NULL
+  
+  # setting a new matrix
   set <- function(y) {
     x <<- y
-    f <<- NULL
+    matrixinverse <<- NULL
   }
+  
+  #getting a matrix
   get <- function() x
-  setinverse <- function(solve) f <<- solve
-  getinverse <- function() f
-  list(set = set, get = get, setinverse = setinverse, getinverse = getinverse) 
+  
+  #setting with inverse of matrix
+  setinverse <- function(solve) matrixinverse <<- solve
+  
+  # getting inverse of matrix 
+  getinverse <- function() matrixinverse
+  
+  #return a list of functions
+  list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
-## Write a short comment describing this function
 
+# function computes the inverse of the special "matrix" returned by makeCacheMatrix above
 cacheSolve<-function(x,...){
   
-  ##  Return a matrix that is the inverse of 'x'
-  f <- x$getinverse()
-  if(!is.null(f)) {
+  # assigning cached value
+  matrixinverse <- x$getinverse()
+  
+  #checking on NULL
+  if(!is.null(matrixinverse)) {
     message("getting cached data")
-    return(f)
+    return(matrixinverse)
   }
-    
+  
+  # getting matrix and calculating inverse
   m<-x$get()
-  f<-solve(m)
-  x$setinverse(f)
-  f
+  matrixinverse<-solve(m)
+  
+  # set value on inverse matrix in cache
+  x$setinverse(matrixinverse)
+  
+  # return a matrix, which is the inverse
+  matrixinverse
 }
 
+#solution
 a<-makeCacheMatrix(matrix(1:4,nrow=2,ncol=2))
 a$get()
 cacheSolve(a)
@@ -39,4 +55,3 @@ a$getinverse()
 a$set(matrix(c(3,5,7,6),nrow=2,ncol=2))
 cacheSolve(a)
 a$get()
-a$getinverse()
